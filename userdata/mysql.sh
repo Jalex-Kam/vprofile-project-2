@@ -4,13 +4,13 @@ sudo yum update -y
 sudo yum install epel-release -y
 sudo yum install git zip unzip -y
 sudo yum install mariadb-server -y
-
+sudo yum install firewalld -y
 
 # starting & enabling mariadb-server
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
 cd /tmp/
-git clone -b main https://github.com/hkhcoder/vprofile-project.git
+git clone -b aws-LiftAndShift https://github.com/Jalex-Kam/vprofile-project-2.git
 #restore the dump file for the application
 sudo mysqladmin -u root password "$DATABASE_PASS"
 sudo mysql -u root -p"$DATABASE_PASS" -e "UPDATE mysql.user SET Password=PASSWORD('$DATABASE_PASS') WHERE User='root'"
@@ -21,7 +21,7 @@ sudo mysql -u root -p"$DATABASE_PASS" -e "FLUSH PRIVILEGES"
 sudo mysql -u root -p"$DATABASE_PASS" -e "create database accounts"
 sudo mysql -u root -p"$DATABASE_PASS" -e "grant all privileges on accounts.* TO 'admin'@'localhost' identified by 'admin123'"
 sudo mysql -u root -p"$DATABASE_PASS" -e "grant all privileges on accounts.* TO 'admin'@'%' identified by 'admin123'"
-sudo mysql -u root -p"$DATABASE_PASS" accounts < /tmp/vprofile-project/src/main/resources/db_backup.sql
+sudo mysql -u root -p"$DATABASE_PASS" accounts < /tmp/vprofile-project-2/src/main/resources/db_backup.sql
 sudo mysql -u root -p"$DATABASE_PASS" -e "FLUSH PRIVILEGES"
 
 # Restart mariadb-server
@@ -35,3 +35,7 @@ sudo firewall-cmd --get-active-zones
 sudo firewall-cmd --zone=public --add-port=3306/tcp --permanent
 sudo firewall-cmd --reload
 sudo systemctl restart mariadb
+
+
+# check open on firewalld
+sudo firewall-cmd --list-all
